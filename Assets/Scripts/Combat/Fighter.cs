@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using RPG.Core;
 using RPG.Movement;
@@ -8,12 +9,9 @@ namespace RPG.Combat
 {
     public class Fighter : MonoBehaviour, IAction
     {
-        [SerializeField]
-        private float weaponRange = 2f;
-        [SerializeField]
-        private float weaponDamage = 5f;
-        [SerializeField]
-        private float timeBetweenAttacks = 1f;
+        [SerializeField] private float timeBetweenAttacks = 1f;
+        [SerializeField] private Transform handTransform = null;
+        [SerializeField] private Weapon defaultWeapon = null;
 
         private Health target;
         private Mover mover;
@@ -23,12 +21,14 @@ namespace RPG.Combat
 
         private const string StopAttackTrigger = "stopAttack";
         private const string AttackTrigger = "attack";
+        public Weapon currentWeapon = null;
 
         private void Start()
         {
             this.mover = this.GetComponent<Mover>();
             this.actionScheduler = this.GetComponent<ActionScheduler>();
             this.animator = GetComponent<Animator>();
+            EquipWeapon(defaultWeapon);
         }
 
         private void Update()
@@ -75,6 +75,16 @@ namespace RPG.Combat
             this.target = null;
         }
 
+        public void EquipWeapon(Weapon weapon)
+        {
+            if (weapon != null)
+            {
+                currentWeapon = weapon;
+                Animator animator = GetComponent<Animator>();
+                weapon.Spawn(handTransform, animator);
+            }
+        }
+
         private void AttackBehaviour()
         {
             transform.LookAt(target.transform);
@@ -91,13 +101,13 @@ namespace RPG.Combat
         {
             if (target != null)
             {
-                target.TakeDamage(this.weaponDamage);
+                target.TakeDamage(this.currentWeapon.GetWeaponDamage());
             } 
         }
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < this.currentWeapon.GetWeaponRange();
         }
 
         private void SetAttackTrigger()
