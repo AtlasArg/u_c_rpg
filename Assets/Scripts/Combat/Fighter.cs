@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using RPG.Attributes;
 using RPG.Core;
 using RPG.Movement;
 using RPG.Saving;
@@ -91,6 +89,11 @@ namespace RPG.Combat
             }
         }
 
+        public Health GetTarget()
+        {
+            return this.target;
+        }
+
         private void AttackBehaviour()
         {
             transform.LookAt(target.transform);
@@ -109,11 +112,11 @@ namespace RPG.Combat
             {
                 if (this.currentWeapon.HasProjectile())
                 {
-                    this.currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                    this.currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject);
                 }
                 else
                 {
-                    target.TakeDamage(this.currentWeapon.GetWeaponDamage());
+                    target.TakeDamage(gameObject, this.currentWeapon.GetWeaponDamage());
                 }
             } 
         }
