@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!54 &2589187780576135955
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8623294514241396974}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!136 &1875954155371811098
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -143,7 +159,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6558516922378554445, guid: 7b5fb9b1145e14f6390cb21a4c47d80f,
         type: 3}
+      propertyPath: defaultWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: b3aa577f0cb547448a4065a0f89d8370,
+        type: 2}
+    - target: {fileID: 6558516922378554445, guid: 7b5fb9b1145e14f6390cb21a4c47d80f,
+        type: 3}
       propertyPath: handTransform
+      value: 
+      objectReference: {fileID: 4279322623574319466}
+    - target: {fileID: 6558516922378554445, guid: 7b5fb9b1145e14f6390cb21a4c47d80f,
+        type: 3}
+      propertyPath: leftHandTransform
+      value: 
+      objectReference: {fileID: 4279322623574376808}
+    - target: {fileID: 6558516922378554445, guid: 7b5fb9b1145e14f6390cb21a4c47d80f,
+        type: 3}
+      propertyPath: rightHandTransform
       value: 
       objectReference: {fileID: 4279322623574319466}
     m_RemovedComponents: []
@@ -217,6 +249,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
+--- !u!4 &4279322623574376808 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 481036, guid: 30cf93deff988e74e88a144bd2127c18,
+    type: 3}
+  m_PrefabInstance: {fileID: 4279322623574726244}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4279322623574319466 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 423694, guid: 30cf93deff988e74e88a144bd2127c18,
