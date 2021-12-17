@@ -1,49 +1,55 @@
-﻿using RPG.Saving;
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using RPG.Saving;
 using UnityEngine;
 
 namespace RPG.SceneManagement
 {
-
-
     public class SavingWrapper : MonoBehaviour
     {
         const string defaultSaveFile = "save";
-        private SavingSystem savingSystem;
-        [SerializeField] private float fadeInTime = 0.25f;
 
-        private IEnumerator Start()
+        [SerializeField] float fadeInTime = 0.2f;
+        
+        private void Awake() 
         {
-            this.savingSystem = this.GetComponent<SavingSystem>();
-            Fader fader = FindObjectOfType<Fader>();
-            //fader.FadeOutInmediate();
-            yield return this.savingSystem.LoadLastScene(defaultSaveFile);
-            //yield return fader.FadeIn(fadeInTime);
+            StartCoroutine(LoadLastScene());
         }
 
-        void Update()
-        {
+        private IEnumerator LoadLastScene() {
+            yield return GetComponent<SavingSystem>().LoadLastScene(defaultSaveFile);
+            Fader fader = FindObjectOfType<Fader>();
+            fader.FadeOutImmediate();
+            yield return fader.FadeIn(fadeInTime);
+        }
+
+        private void Update() {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                Save();
+            }
             if (Input.GetKeyDown(KeyCode.L))
             {
                 Load();
             }
-
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.Delete))
             {
-                Save();
+                Delete();
             }
         }
 
         public void Load()
         {
-            this.savingSystem.Load(defaultSaveFile);
+            GetComponent<SavingSystem>().Load(defaultSaveFile);
         }
 
         public void Save()
         {
-            this.savingSystem.Save(defaultSaveFile);
+            GetComponent<SavingSystem>().Save(defaultSaveFile);
+        }
+
+        public void Delete()
+        {
+            GetComponent<SavingSystem>().Delete(defaultSaveFile);
         }
     }
 }

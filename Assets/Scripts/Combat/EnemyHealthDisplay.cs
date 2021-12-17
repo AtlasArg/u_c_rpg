@@ -1,30 +1,28 @@
 using System;
-using TMPro;
+using RPG.Attributes;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPG.Combat
 {
     public class EnemyHealthDisplay : MonoBehaviour
     {
-        TextMeshProUGUI textValue;
         Fighter fighter;
 
         private void Awake()
         {
             fighter = GameObject.FindWithTag("Player").GetComponent<Fighter>();
-            textValue = GetComponent<TextMeshProUGUI>();
         }
 
-        void Update()
+        private void Update()
         {
             if (fighter.GetTarget() == null)
             {
-                textValue.text = "N/A";
+                GetComponent<Text>().text = "N/A";
+                return;
             }
-            else
-            {
-                textValue.text = String.Format("{0:0.0}%", fighter.GetTarget().GetPercentage());
-            }
+            Health health = fighter.GetTarget();
+            GetComponent<Text>().text = String.Format("{0:0}/{1:0}", health.GetHealthPoints(), health.GetMaxHealthPoints());
         }
     }
 }

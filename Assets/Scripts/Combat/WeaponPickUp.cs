@@ -1,30 +1,49 @@
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using RPG.Attributes;
+using RPG.Control;
 using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class WeaponPickUp : MonoBehaviour
+    public class WeaponPickup : MonoBehaviour, IRaycastable
     {
-        [SerializeField] private Weapon weapon = null;
-        [SerializeField] private float respawnTime = 5f;
+        [SerializeField] WeaponConfig weapon = null;
+        [SerializeField] float healthToRestore = 0;
+        [SerializeField] float respawnTime = 5;
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other) 
         {
-            if (other.tag.Equals("Player"))
+            if (other.gameObject.tag == "Player")
             {
-                other.gameObject.GetComponent<Fighter>().EquipWeapon(weapon);
-                StartCoroutine(HideForSeconds(respawnTime));
+                Pickup(other.gameObject);
             }
+        }
+
+        private void Pickup(GameObject subject)
+        {
+            if (weapon != null)
+            {
+                subject.GetComponent<Fighter>().EquipWeapon(weapon);
+            }
+
+            if (healthToRestore > 0)
+            {
+                subject.GetComponent<Health>().Heal(healthToRestore);
+            }
+            
+            StartCoroutine(HideForSeconds(respawnTime));
         }
 
         private IEnumerator HideForSeconds(float seconds)
         {
-            ShowPickUp(false);
+            ShowPickup(false);
             yield return new WaitForSeconds(seconds);
-            ShowPickUp(true);
+            ShowPickup(true);
         }
 
-        private void ShowPickUp(bool shouldShow)
+        private void ShowPickup(bool shouldShow)
         {
             GetComponent<Collider>().enabled = shouldShow;
             foreach (Transform child in transform)
@@ -32,6 +51,19 @@ namespace RPG.Combat
                 child.gameObject.SetActive(shouldShow);
             }
         }
+
+        public bool HandleRaycast(PlayerController callingController)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Pickup(callingController.gameObject);
+            }
+            return true;
+        }
+
+        public CursorType GetCursorType()
+        {
+            return CursorType.Pickup;
+        }
     }
 }
-
