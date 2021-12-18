@@ -21,11 +21,13 @@ namespace RPG.Combat
         private float timeSinceLastAttack = Mathf.Infinity;
         private WeaponConfig currentWeaponConfig;
         private LazyValue<Weapon> currentWeapon;
+        private Mover mover;
 
         private void Awake()
         {
             currentWeaponConfig = defaultWeapon;
             currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
+            this.mover = GetComponent<Mover>();
         }
 
         private Weapon SetupDefaultWeapon()
@@ -33,7 +35,7 @@ namespace RPG.Combat
             return AttachWeapon(defaultWeapon);
         }
 
-        private void Start()
+        private void Start() 
         {
             currentWeapon.ForceInit();
         }
@@ -45,13 +47,13 @@ namespace RPG.Combat
             if (target == null) return;
             if (target.IsDead()) return;
 
-            if (!GetIsInRange())
+            if (!GetIsInRange(target.transform))
             {
-                GetComponent<Mover>().MoveTo(target.transform.position, 1f);
+                this.mover.MoveTo(target.transform.position, 1f);
             }
             else
             {
-                GetComponent<Mover>().Cancel();
+                this.mover.Cancel();
                 AttackBehaviour();
             }
         }
@@ -117,14 +119,19 @@ namespace RPG.Combat
             Hit();
         }
 
-        private bool GetIsInRange()
+        private bool GetIsInRange(Transform targetTransform)
         {
-            return Vector3.Distance(transform.position, target.transform.position) < currentWeaponConfig.GetRange();
+            return Vector3.Distance(transform.position, targetTransform.position) < currentWeaponConfig.GetRange();
         }
 
         public bool CanAttack(GameObject combatTarget)
         {
             if (combatTarget == null) { return false; }
+            if (!this.mover.CanMoveTo(combatTarget.transform.position) && !this.GetIsInRange(combatTarget.transform)) 
+            {
+                return false;
+            }
+
             Health targetToTest = combatTarget.GetComponent<Health>();
             return targetToTest != null && !targetToTest.IsDead();
         }
@@ -139,7 +146,7 @@ namespace RPG.Combat
         {
             StopAttack();
             target = null;
-            GetComponent<Mover>().Cancel();
+            this.mover.Cancel();
         }
 
         private void StopAttack()
